@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  title: Plaid Institutions API
+  description: API for searching Plaid institutions.
+  version: "1.0.0"
+servers:
+  - url: https://sandbox.plaid.com
+    description: Sandbox server
+paths:
+  /institutions/search:
+    post:
+      summary: Search institutions
+      description: Allows clients to search institutions by name or other criteria.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  description: Your Plaid client ID.
+                secret:
+                  type: string
+                  description: Your Plaid secret.
+                query:
+                  type: string
+                  description: The query string to search institutions.
+                products:
+                  type: array
+                  items:
+                    type: string
+                  description: List of Plaid products to filter institutions.
+                country_codes:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of country codes, used to filter institutions.
+              required:
+                - client_id
+                - secret
+                - query
+                - country_codes
+      responses:
+        '200':
+          description: A list of institutions that match the search criteria.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  institutions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Institution'
+                  request_id:
+                    type: string
+                    description: A unique identifier for the request.
+        '400':
+          description: Bad request, such as missing required parameters.
+components:
+  schemas:
+    Institution:
+      type: object
+      properties:
+        institution_id:
+          type: string
+          description: The institution's ID in Plaid.
+        name:
+          type: string
+          description: The institution's name.
+        country_codes:
+          type: array
+          items:
+            type: string
+          description: The country codes where the institution operates.
+        url:
+          type: string
+          description: The institution's official website URL.
+        logo:
+          type: string
+          description: A URL to the institution's logo.
+        primary_color:
+          type: string
+          description: The primary color of the institution in hexadecimal.
+        products:
+          type: array
+          items:
+            type: string
+          description: The Plaid products that the institution supports.
